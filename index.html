@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Despedida Kiki</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Karla:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --paper:#f4ead8;
+    --paper-raised:#fffdf7;
+    --ink:#241d15;
+    --ink-soft:#6b5c47;
+    --ember:#c85a1e;
+    --ember-ink:#fffaf2;
+    --moss:#445c43;
+    --brass:#a9824f;
+    --rust:#9c3b2e;
+    --line: rgba(36,29,21,0.14);
+    --shadow: rgba(36,29,21,0.16);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#1b1611;
+      --paper-raised:#26201a;
+      --ink:#f3ead9;
+      --ink-soft:#c7b79c;
+      --ember:#e2823f;
+      --ember-ink:#1b1611;
+      --moss:#8aab86;
+      --brass:#d3ac72;
+      --rust:#e2795f;
+      --line: rgba(243,234,217,0.16);
+      --shadow: rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1b1611;
+    --paper-raised:#26201a;
+    --ink:#f3ead9;
+    --ink-soft:#c7b79c;
+    --ember:#e2823f;
+    --ember-ink:#1b1611;
+    --moss:#8aab86;
+    --brass:#d3ac72;
+    --rust:#e2795f;
+    --line: rgba(243,234,217,0.16);
+    --shadow: rgba(0,0,0,0.45);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Karla', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Big Shoulders Display', 'Arial Narrow', sans-serif; text-transform:uppercase; letter-spacing:0.02em; text-wrap:balance; margin:0; }
+  .num{ font-family:'JetBrains Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+
+  .wrap{ max-width:720px; margin:0 auto; padding:20px 16px 64px; }
+
+  .topbar{ display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:2px solid var(--line); margin-bottom:18px; }
+  .brand{ display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+  .cow{ flex:none; }
+  .brand-text{ min-width:0; }
+  .brand-text h1{ font-size:26px; line-height:1; color:var(--ink); }
+  .brand-text .event{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .sync{ font-size:11px; color:var(--ink-soft); display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .sync .dot{ width:7px; height:7px; border-radius:50%; background:var(--moss); }
+  .sync.local .dot{ background:var(--brass); }
+
+  .whoami{ display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:13px; color:var(--ink-soft); }
+  .whoami select{ font:inherit; font-weight:700; color:var(--ink); background:var(--paper-raised); border:1.5px solid var(--line); border-radius:8px; padding:6px 10px; }
+
+  .tabs{ display:flex; gap:6px; margin-bottom:20px; background:var(--paper-raised); border:1.5px solid var(--line); border-radius:12px; padding:4px; }
+  .tab-btn{ flex:1; border:none; background:transparent; font:inherit; font-weight:700; font-size:13.5px; letter-spacing:0.02em; color:var(--ink-soft); padding:9px 6px; border-radius:9px; cursor:pointer; }
+  .tab-btn.active{ background:var(--ember); color:var(--ember-ink); }
+  .tab-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{ outline:2px solid var(--ember); outline-offset:2px; }
+
+  section{ display:flex; flex-direction:column; gap:16px; }
+
+  .card{ background:var(--paper-raised); border:1.5px solid var(--line); border-radius:14px; padding:16px; box-shadow:0 2px 0 var(--shadow); }
+  .card h2{ font-size:15px; color:var(--ink-soft); margin-bottom:12px; }
+
+  .notice-error{ background:var(--paper-raised); border:1.5px solid var(--rust); color:var(--rust); border-radius:12px; padding:11px 14px; font-size:13px; font-weight:600; }
+  .notice-info{ background:var(--paper-raised); border:1.5px dashed var(--brass); color:var(--ink-soft); border-radius:12px; padding:11px 14px; font-size:13px; }
+
+  .total-tile{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .total-tile .label{ font-size:13px; color:var(--ink-soft); font-weight:600; }
+  .total-tile .amount{ font-size:34px; font-weight:600; }
+
+  .bar-row{ display:grid; grid-template-columns:20px 78px 1fr 78px; align-items:center; gap:10px; padding:6px 0; }
+  .bar-row + .bar-row{ border-top:1px solid var(--line); }
+  .bar-row .icon-badge{ width:20px; height:20px; }
+  .bar-row .cname{ font-size:12.5px; font-weight:700; color:var(--ink-soft); }
+  .bar-track{ height:9px; border-radius:5px; background:var(--line); overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:5px; }
+  .bar-row .camt{ text-align:right; font-size:13px; }
+
+  .balances-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:420px){ .balances-grid{ grid-template-columns:1fr; } }
+  .balance-card{ border:1.5px solid var(--line); border-radius:12px; padding:11px 12px; display:flex; flex-direction:column; gap:4px; }
+  .balance-card .bname{ font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px; }
+  .you-tag{ font-size:9.5px; font-weight:700; letter-spacing:0.03em; background:var(--ember); color:var(--ember-ink); border-radius:5px; padding:1px 5px; text-transform:uppercase; }
+  .balance-card .sub{ font-size:11.5px; color:var(--ink-soft); }
+  .balance-card .net{ font-size:16px; margin-top:2px; }
+  .net.pos{ color:var(--moss); } .net.neg{ color:var(--rust); } .net.zero{ color:var(--ink-soft); }
+
+  .settle-list{ display:flex; flex-direction:column; gap:8px; }
+  .settle-row{ display:flex; align-items:center; gap:8px; font-size:13.5px; padding:10px 12px; border-radius:10px; background:var(--paper); border:1px solid var(--line); }
+  .settle-row .arrow{ color:var(--ink-soft); }
+  .settle-row .amt{ margin-left:auto; font-weight:700; color:var(--rust); }
+  .empty-note{ font-size:13px; color:var(--ink-soft); padding:6px 2px; }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{ display:flex; align-items:center; gap:5px; font-size:12px; font-weight:700; border:1.5px solid var(--line); border-radius:999px; padding:5px 11px; cursor:pointer; background:var(--paper-raised); color:var(--ink-soft); }
+  .chip.active{ border-color:transparent; color:var(--ember-ink); }
+  .icon-badge{ width:22px; height:22px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex:none; }
+  .icon-badge svg{ width:13px; height:13px; }
+
+  form.expense-form{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  form.expense-form .full{ grid-column:1 / -1; }
+  label.field{ display:flex; flex-direction:column; gap:4px; font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.03em; }
+  input, select{ font:inherit; font-size:14.5px; color:var(--ink); background:var(--paper); border:1.5px solid var(--line); border-radius:9px; padding:9px 10px; width:100%; }
+  input[type="number"]{ font-family:'JetBrains Mono', monospace; }
+  .cat-picker, .split-picker{ text-transform:none; }
+  .cat-picker{ display:flex; gap:6px; flex-wrap:wrap; }
+  .cat-opt{ display:flex; align-items:center; gap:6px; border:1.5px solid var(--line); border-radius:9px; padding:6px 10px; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--ink-soft); }
+  .cat-opt.sel{ border-color:transparent; color:var(--ember-ink); }
+  .split-picker{ display:flex; flex-wrap:wrap; gap:6px; }
+  .split-opt{ font-size:12.5px; font-weight:700; border:1.5px solid var(--line); border-radius:999px; padding:5px 10px; cursor:pointer; color:var(--ink-soft); background:var(--paper); }
+  .split-opt.sel{ border-color:var(--moss); color:var(--moss); background:var(--paper-raised); }
+  .form-actions{ display:flex; gap:8px; align-items:center; }
+  .btn-primary{ font:inherit; font-weight:700; font-size:14px; background:var(--ember); color:var(--ember-ink); border:none; border-radius:9px; padding:11px 18px; cursor:pointer; }
+  .btn-secondary{ font:inherit; font-weight:700; font-size:13px; background:transparent; color:var(--ink-soft); border:1.5px solid var(--line); border-radius:9px; padding:10px 14px; cursor:pointer; }
+  .form-err{ font-size:12.5px; color:var(--rust); font-weight:600; }
+
+  .expense-list{ display:flex; flex-direction:column; }
+  .expense-row{ display:grid; grid-template-columns:22px 1fr auto; gap:10px; align-items:center; padding:11px 2px; }
+  .expense-row + .expense-row{ border-top:1px solid var(--line); }
+  .exp-main{ min-width:0; }
+  .exp-desc{ font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .exp-meta{ font-size:11.5px; color:var(--ink-soft); margin-top:1px; }
+  .exp-right{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:3px; }
+  .exp-amt{ font-size:14.5px; font-weight:600; }
+  .exp-actions{ display:flex; gap:6px; }
+  .icon-btn{ border:none; background:transparent; color:var(--ink-soft); cursor:pointer; padding:2px; font-size:11px; font-weight:700; }
+  .icon-btn:hover{ color:var(--ink); }
+  .icon-btn.danger{ color:var(--rust); }
+
+  .people-list{ display:flex; flex-wrap:wrap; gap:8px; }
+  .person-chip{ display:flex; align-items:center; gap:7px; background:var(--paper); border:1.5px solid var(--line); border-radius:999px; padding:6px 8px 6px 13px; font-size:13.5px; font-weight:700; }
+  .person-chip button{ border:none; background:var(--line); color:var(--ink); width:18px; height:18px; border-radius:50%; cursor:pointer; font-size:12px; line-height:1; }
+  .add-person{ display:flex; gap:8px; }
+  .add-person input{ flex:1; }
+  .field-row{ display:grid; grid-template-columns:2fr 1fr; gap:10px; }
+  .dirty-note{ font-size:12px; color:var(--brass); font-weight:700; }
+  footer.credit{ text-align:center; font-size:11.5px; color:var(--ink-soft); margin-top:26px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <svg class="cow" width="46" height="46" viewBox="0 0 60 58" fill="none" aria-hidden="true">
+        <ellipse cx="9" cy="35" rx="4.5" ry="6" transform="rotate(-25 9 35)" fill="var(--brass)" stroke="var(--ink)" stroke-width="1.2"/>
+        <ellipse cx="51" cy="35" rx="4.5" ry="6" transform="rotate(25 51 35)" fill="var(--brass)" stroke="var(--ink)" stroke-width="1.2"/>
+        <ellipse cx="30" cy="37" rx="17" ry="15" fill="var(--paper-raised)" stroke="var(--ink)" stroke-width="1.8"/>
+        <ellipse cx="43" cy="41" rx="5" ry="3.6" fill="var(--ink)" opacity="0.14"/>
+        <ellipse cx="30" cy="25" rx="23" ry="6" fill="var(--brass)" stroke="var(--ink)" stroke-width="1.6"/>
+        <path d="M10,25 C10,10 50,10 50,25 Z" fill="var(--brass)" stroke="var(--ink)" stroke-width="1.6"/>
+        <rect x="24.5" y="16" width="11" height="5" rx="1.2" fill="var(--ink)" opacity="0.85"/>
+        <rect x="14" y="34" width="13" height="8.5" rx="3.2" fill="var(--ink)"/>
+        <rect x="33" y="34" width="13" height="8.5" rx="3.2" fill="var(--ink)"/>
+        <rect x="27" y="36.3" width="6" height="2.6" fill="var(--ink)"/>
+        <ellipse cx="25.5" cy="48.5" rx="1.4" ry="1.1" fill="var(--ink)"/>
+        <ellipse cx="34.5" cy="48.5" rx="1.4" ry="1.1" fill="var(--ink)"/>
+        <ellipse cx="30" cy="51.5" rx="5.5" ry="3.8" fill="var(--rust)"/>
+      </svg>
+      <div class="brand-text">
+        <h1>Despedida Kiki</h1>
+        <div class="event" id="eventNameLabel">&nbsp;</div>
+      </div>
+    </div>
+    <div class="sync" id="syncIndicator"><span class="dot"></span><span id="syncLabel">Cargando…</span></div>
+  </div>
+
+  <div class="whoami">
+    <span>Vos sos:</span>
+    <select id="whoamiSelect"></select>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" data-tab="resumen">Resumen</button>
+    <button class="tab-btn" data-tab="gastos">Gastos</button>
+    <button class="tab-btn" data-tab="participantes">Participantes</button>
+  </div>
+
+  <div id="app"></div>
+
+  <footer class="credit">Hecha para no discutir de plata en la despedida.</footer>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
+  collection, onSnapshot, query, orderBy
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+(function(){
+  "use strict";
+
+  var CATEGORIES = [
+    { key:'combustible', label:'Combustible', color:'var(--rust)',
+      icon:'<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>' },
+    { key:'comida', label:'Comida', color:'var(--ember)',
+      icon:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/>' },
+    { key:'bebidas', label:'Bebidas', color:'var(--brass)',
+      icon:'<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>' },
+    { key:'salidas', label:'Salidas', color:'var(--moss)',
+      icon:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>' },
+    { key:'otros', label:'Otros', color:'var(--ink-soft)',
+      icon:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>' }
+  ];
+  function catInfo(key){ for(var i=0;i<CATEGORIES.length;i++){ if(CATEGORIES[i].key===key) return CATEGORIES[i]; } return CATEGORIES[4]; }
+  function iconSvg(key, size){
+    var c = catInfo(key);
+    return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+c.icon+'</svg>';
+  }
+
+  var DEFAULT_PARTICIPANTS = ["Mathias","Eduardo","Nahir","Marcos","Lucas","Emiliano","Cristian","Pepa"];
+  var DEFAULT_CONFIG = { eventName:"Despedida de Cristian", currency:"$", participants: DEFAULT_PARTICIPANTS.slice() };
+  var DEFAULT_EXPENSES = [];
+  function iso(daysAgo){ var d=new Date(Date.now()-daysAgo*86400000); return d.toISOString().slice(0,10); }
+
+  var LOCAL_KEY = 'kiki_local_store_v1';
+  var MYNAME_KEY = 'kiki_myname';
+
+  var mode = 'loading';
+  var fsDb = null;
+  var config = null;
+  var configDraft = null;
+  var draftDirty = false;
+  var expenses = [];
+  var myName = '';
+  try{ myName = localStorage.getItem(MYNAME_KEY) || ''; }catch(e){}
+  var activeTab = 'resumen';
+  var categoryFilter = 'all';
+  var editingId = null;
+  var confirmingDeleteId = null;
+  var pendingRemoteRender = false;
+  var gastosNotice = null;
+  var participantesNotice = null;
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+  function fmt(n){
+    var v = Math.round((n||0)*100)/100;
+    var opts = (Math.abs(v % 1) < 0.001) ? {minimumFractionDigits:0, maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2};
+    return (config && config.currency ? config.currency : '$') + v.toLocaleString('es-AR', opts);
+  }
+
+  // ---------------- storage: Firebase Firestore ----------------
+
+  function loadLocal(){
+    var raw = null;
+    try{ raw = localStorage.getItem(LOCAL_KEY); }catch(e){}
+    if(raw){
+      try{
+        var data = JSON.parse(raw);
+        config = data.config;
+        expenses = data.expenses || [];
+        return;
+      }catch(e){}
+    }
+    config = clone(DEFAULT_CONFIG);
+    expenses = [];
+    persistLocal();
+  }
+  function persistLocal(){
+    try{ localStorage.setItem(LOCAL_KEY, JSON.stringify({ config: config, expenses: expenses })); }catch(e){}
+  }
+
+  function syncDraft(){
+    if(!draftDirty) configDraft = clone(config);
+  }
+
+  function errorMessage(e){
+    var code = e && e.code;
+    if(code === 'permission-denied') return 'La base de datos rechazó el guardado (revisá las reglas de Firestore).';
+    if(code === 'unavailable') return 'Problema de conexión. La app va a reintentar guardar sola cuando vuelva la señal.';
+    if(code === 'resource-exhausted') return 'Se alcanzó un límite de uso de la base. Probá más tarde.';
+    return 'No se pudo guardar. Probá de nuevo.';
+  }
+
+  async function saveConfig(newConfig){
+    if(mode === 'shared'){
+      try{ await setDoc(doc(fsDb,'config','main'), newConfig); }
+      catch(e){ console.error('save config failed', e); participantesNotice = errorMessage(e); render(); return; }
+    } else {
+      config = newConfig;
+      persistLocal();
+    }
+    config = newConfig;
+    draftDirty = false;
+    syncDraft();
+    participantesNotice = null;
+    render();
+  }
+
+  async function addOrUpdateExpense(exp){
+    var wasEditing = editingId;
+    if(mode === 'shared'){
+      try{
+        if(wasEditing){
+          await updateDoc(doc(fsDb,'expenses',wasEditing), exp);
+        } else {
+          exp.createdAt = Date.now();
+          var ref = doc(collection(fsDb,'expenses'));
+          await setDoc(ref, exp);
+        }
+      }catch(e){
+        console.error('save expense failed', e);
+        showFormError(errorMessage(e));
+        return;
+      }
+    } else {
+      if(wasEditing){
+        var found = expenses.find(function(x){ return x.id === wasEditing; });
+        if(found){ Object.assign(found, exp); persistLocal(); }
+      } else {
+        exp.createdAt = Date.now();
+        exp.id = 'e' + Date.now() + Math.random().toString(36).slice(2,7);
+        expenses.unshift(exp);
+        persistLocal();
+      }
+    }
+    editingId = null;
+    render();
+  }
+  function showFormError(msg){
+    var err = document.getElementById('formErr');
+    if(err) err.textContent = msg;
+  }
+
+  async function deleteExpense(id){
+    if(mode === 'shared'){
+      try{ await deleteDoc(doc(fsDb,'expenses', id)); gastosNotice = null; }
+      catch(e){ console.error('delete failed', e); gastosNotice = errorMessage(e); }
+      render();
+    } else {
+      expenses = expenses.filter(function(e){ return e.id !== id; });
+      persistLocal();
+      render();
+    }
+  }
+
+  async function initStorage(){
+    try{
+      var app = initializeApp(firebaseConfig);
+      fsDb = getFirestore(app);
+      var authFs = getAuth(app);
+      await new Promise(function(resolve, reject){
+        var unsub = onAuthStateChanged(authFs, function(user){
+          if(user){ unsub(); resolve(user); }
+        }, reject);
+        signInAnonymously(authFs).catch(reject);
+      });
+      mode = 'shared';
+      await ensureSeeded();
+      onSnapshot(doc(fsDb,'config','main'), function(snap){
+        config = snap.exists() ? snap.data() : clone(DEFAULT_CONFIG);
+        syncDraft();
+        pendingRemoteRender = true;
+        render();
+      }, function(err){ console.error('config snapshot error', err); fallbackToLocal(); });
+      onSnapshot(query(collection(fsDb,'expenses'), orderBy('createdAt','desc')), function(qs){
+        expenses = qs.docs.map(function(d){ return Object.assign({ id: d.id }, d.data()); });
+        pendingRemoteRender = true;
+        render();
+      }, function(err){ console.error('expenses snapshot error', err); fallbackToLocal(); });
+    } catch(e){
+      console.error('Firebase init failed, using local mode', e);
+      fallbackToLocal();
+    }
+  }
+
+  function fallbackToLocal(){
+    mode = 'local';
+    loadLocal();
+    syncDraft();
+    render();
+  }
+
+  async function ensureSeeded(){
+    var ref = doc(fsDb,'config','main');
+    var snap = await getDoc(ref);
+    if(snap.exists()) return;
+    await setDoc(ref, clone(DEFAULT_CONFIG));
+  }
+
+  // ---------------- calculations ----------------
+
+  function allNames(){
+    var set = {};
+    (config.participants || []).forEach(function(n){ set[n]=true; });
+    expenses.forEach(function(e){
+      if(e.paidBy) set[e.paidBy]=true;
+      (e.splitAmong||[]).forEach(function(n){ set[n]=true; });
+    });
+    return Object.keys(set);
+  }
+
+  function computeBalances(){
+    var names = allNames();
+    var paid = {}, share = {};
+    names.forEach(function(n){ paid[n]=0; share[n]=0; });
+    expenses.forEach(function(e){
+      paid[e.paidBy] = (paid[e.paidBy]||0) + Number(e.amount||0);
+      var group = (e.splitAmong && e.splitAmong.length) ? e.splitAmong : names;
+      var per = Number(e.amount||0) / group.length;
+      group.forEach(function(n){ share[n] = (share[n]||0) + per; });
+    });
+    return names.map(function(n){
+      return { name:n, paid:paid[n]||0, share:share[n]||0, net:(paid[n]||0)-(share[n]||0) };
+    }).sort(function(a,b){ return b.net - a.net; });
+  }
+
+  function computeSettlements(balances){
+    var creditors = balances.filter(function(b){ return b.net > 0.5; }).map(function(b){ return {name:b.name, amt:b.net}; });
+    var debtors = balances.filter(function(b){ return b.net < -0.5; }).map(function(b){ return {name:b.name, amt:-b.net}; });
+    var moves = [];
+    var i=0, j=0;
+    while(i < debtors.length && j < creditors.length){
+      var pay = Math.min(debtors[i].amt, creditors[j].amt);
+      moves.push({ from:debtors[i].name, to:creditors[j].name, amount:pay });
+      debtors[i].amt -= pay; creditors[j].amt -= pay;
+      if(debtors[i].amt < 0.5) i++;
+      if(creditors[j].amt < 0.5) j++;
+    }
+    return moves;
+  }
+
+  function computeCategoryTotals(){
+    var totals = {};
+    CATEGORIES.forEach(function(c){ totals[c.key]=0; });
+    expenses.forEach(function(e){ totals[e.category] = (totals[e.category]||0) + Number(e.amount||0); });
+    return totals;
+  }
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+
+  // ---------------- render ----------------
+
+  function captureGastosFormState(){
+    var form = document.getElementById('expenseForm');
+    if(!form || editingId) return null;
+    var catInput = document.querySelector('input[name="category"]:checked');
+    return {
+      desc: document.getElementById('f-desc').value,
+      amount: document.getElementById('f-amount').value,
+      date: document.getElementById('f-date').value,
+      category: catInput ? catInput.value : null,
+      paidBy: document.getElementById('f-paidby').value,
+      split: Array.prototype.map.call(document.querySelectorAll('[data-split-name].sel'), function(el){ return el.getAttribute('data-split-name'); })
+    };
+  }
+  function restoreGastosFormState(state){
+    if(!state) return;
+    var form = document.getElementById('expenseForm');
+    if(!form) return;
+    document.getElementById('f-desc').value = state.desc;
+    document.getElementById('f-amount').value = state.amount;
+    document.getElementById('f-date').value = state.date;
+    if(state.category){
+      document.querySelectorAll('input[name="category"]').forEach(function(r){ r.checked = (r.value===state.category); });
+      document.querySelectorAll('[data-cat-opt]').forEach(function(o){
+        var isSel = o.getAttribute('data-cat-opt')===state.category;
+        o.classList.toggle('sel', isSel);
+        var c = catInfo(o.getAttribute('data-cat-opt'));
+        o.style.background = isSel ? c.color : '';
+        o.style.borderColor = isSel ? c.color : '';
+      });
+    }
+    if(document.getElementById('f-paidby')) document.getElementById('f-paidby').value = state.paidBy;
+    document.querySelectorAll('[data-split-name]').forEach(function(el){
+      el.classList.toggle('sel', state.split.indexOf(el.getAttribute('data-split-name')) !== -1);
+    });
+  }
+  function captureParticipantesFormState(){
+    var input = document.getElementById('f-newperson');
+    return input ? input.value : '';
+  }
+  function restoreParticipantesFormState(val){
+    var input = document.getElementById('f-newperson');
+    if(input && val) input.value = val;
+  }
+
+  function render(){
+    if(!config){ return; }
+    var isRemote = pendingRemoteRender;
+    pendingRemoteRender = false;
+    var preservedGastos = (isRemote && activeTab === 'gastos') ? captureGastosFormState() : null;
+    var preservedNewPerson = (isRemote && activeTab === 'participantes') ? captureParticipantesFormState() : null;
+    document.getElementById('eventNameLabel').textContent = config.eventName || 'Despedida';
+    var syncEl = document.getElementById('syncIndicator');
+    var syncLabel = document.getElementById('syncLabel');
+    if(mode === 'shared'){ syncEl.classList.remove('local'); syncLabel.textContent = 'Sincronizado'; }
+    else { syncEl.classList.add('local'); syncLabel.textContent = 'Modo local'; }
+
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
+    });
+
+    renderWhoami();
+
+    var app = document.getElementById('app');
+    if(activeTab === 'resumen') app.innerHTML = renderResumen();
+    else if(activeTab === 'gastos') app.innerHTML = renderGastos();
+    else app.innerHTML = renderParticipantes();
+
+    bindTabEvents();
+    if(activeTab === 'resumen') bindResumenEvents();
+    if(activeTab === 'gastos'){ bindGastosEvents(); restoreGastosFormState(preservedGastos); }
+    if(activeTab === 'participantes'){ bindParticipantesEvents(); restoreParticipantesFormState(preservedNewPerson); }
+  }
+
+  function renderWhoami(){
+    var sel = document.getElementById('whoamiSelect');
+    var names = (config.participants || []);
+    var opts = '<option value="">— elegí tu nombre —</option>' + names.map(function(n){
+      return '<option value="'+esc(n)+'"'+(n===myName?' selected':'')+'>'+esc(n)+'</option>';
+    }).join('');
+    sel.innerHTML = opts;
+  }
+
+  function renderNotice(msg){
+    if(!msg) return '';
+    return '<div class="notice-error">'+esc(msg)+'</div>';
+  }
+
+  function renderLocalModeNotice(){
+    if(mode !== 'local') return '';
+    return '<div class="notice-info">Estás en modo local: revisá que <code>firebase-config.js</code> tenga las claves reales de tu proyecto Firebase. Mientras tanto, lo que cargues queda solo en este dispositivo.</div>';
+  }
+
+  function renderResumen(){
+    var balances = computeBalances();
+    var totals = computeCategoryTotals();
+    var grandTotal = balances.reduce(function(s,b){ return s + b.paid; }, 0);
+    var maxCat = Math.max.apply(null, CATEGORIES.map(function(c){ return totals[c.key]||0; }).concat([1]));
+    var settlements = computeSettlements(balances);
+
+    var barsHtml = CATEGORIES.map(function(c){
+      var v = totals[c.key] || 0;
+      var pct = grandTotal>0 ? Math.max(3, Math.round((v/maxCat)*100)) : 0;
+      return '<div class="bar-row">' +
+        '<span class="icon-badge" style="background:'+c.color+';color:var(--paper-raised)">'+iconSvg(c.key,13)+'</span>' +
+        '<span class="cname">'+c.label+'</span>' +
+        '<span class="bar-track"><span class="bar-fill" style="width:'+pct+'%;background:'+c.color+'"></span></span>' +
+        '<span class="camt num">'+fmt(v)+'</span>' +
+      '</div>';
+    }).join('');
+
+    var balancesHtml = balances.map(function(b){
+      var netClass = b.net > 0.5 ? 'pos' : (b.net < -0.5 ? 'neg' : 'zero');
+      var netLabel = b.net > 0.5 ? ('le deben ' + fmt(b.net)) : (b.net < -0.5 ? ('debe ' + fmt(-b.net)) : 'está al día');
+      return '<div class="balance-card">' +
+        '<div class="bname">'+esc(b.name)+(b.name===myName?'<span class="you-tag">vos</span>':'')+'</div>' +
+        '<div class="sub">Puso '+fmt(b.paid)+' · le toca '+fmt(b.share)+'</div>' +
+        '<div class="net num '+netClass+'">'+netLabel+'</div>' +
+      '</div>';
+    }).join('');
+
+    var settleHtml = settlements.length ? settlements.map(function(m){
+      return '<div class="settle-row"><b>'+esc(m.from)+'</b><span class="arrow">→</span><b>'+esc(m.to)+'</b><span class="amt num">'+fmt(m.amount)+'</span></div>';
+    }).join('') : '<div class="empty-note">Las cuentas ya están saldadas. Nadie le debe nada a nadie.</div>';
+
+    return renderLocalModeNotice() +
+      '<div class="card total-tile"><span class="label">Total gastado en el viaje</span><span class="amount num">'+fmt(grandTotal)+'</span></div>' +
+      '<div class="card"><h2>Por categoría</h2>'+barsHtml+'</div>' +
+      '<div class="card"><h2>Saldo de cada uno</h2><div class="balances-grid">'+(balancesHtml || '<div class="empty-note">Todavía no hay participantes cargados.</div>')+'</div></div>' +
+      '<div class="card"><h2>Así se saldan las cuentas</h2><div class="settle-list">'+settleHtml+'</div></div>';
+  }
+
+  function renderGastos(){
+    var editing = editingId ? expenses.find(function(e){ return e.id === editingId; }) : null;
+    var people = config.participants || [];
+
+    var chipsHtml = '<div class="chips">' +
+      '<span class="chip'+(categoryFilter==='all'?' active':'')+'" style="'+(categoryFilter==='all'?'background:var(--ink);color:var(--paper)':'')+'" data-filter="all">Todos</span>' +
+      CATEGORIES.map(function(c){
+        var active = categoryFilter===c.key;
+        return '<span class="chip'+(active?' active':'')+'" style="'+(active?('background:'+c.color+';color:var(--paper-raised)'):'')+'" data-filter="'+c.key+'">'+c.label+'</span>';
+      }).join('') + '</div>';
+
+    var catPickerHtml = '<div class="cat-picker">' + CATEGORIES.map(function(c){
+      var sel = editing ? editing.category === c.key : c.key === 'comida';
+      return '<label class="cat-opt'+(sel?' sel':'')+'" style="'+(sel?('background:'+c.color+';border-color:'+c.color):'')+'" data-cat-opt="'+c.key+'">' +
+        '<input type="radio" name="category" value="'+c.key+'" style="display:none" '+(sel?'checked':'')+'>' + iconSvg(c.key,14) + c.label + '</label>';
+    }).join('') + '</div>';
+
+    var paidByOptions = '<option value="">Elegir…</option>' + people.map(function(n){
+      return '<option value="'+esc(n)+'"'+((editing?editing.paidBy:myName)===n?' selected':'')+'>'+esc(n)+'</option>';
+    }).join('');
+
+    var defaultSplit = editing ? editing.splitAmong : people;
+    var splitHtml = '<div class="split-picker">' + people.map(function(n){
+      var sel = defaultSplit && defaultSplit.indexOf(n) !== -1;
+      return '<span class="split-opt'+(sel?' sel':'')+'" data-split-name="'+esc(n)+'">'+esc(n)+'</span>';
+    }).join('') + '</div>';
+
+    var formHtml = people.length < 2 ? '<div class="empty-note">Cargá al menos dos participantes en la pestaña «Participantes» para poder anotar gastos.</div>' :
+      '<form class="expense-form" id="expenseForm">' +
+        '<label class="field full">Descripción<input type="text" id="f-desc" placeholder="Ej: Nafta, asado, entradas…" value="'+esc(editing?editing.description:'')+'" required></label>' +
+        '<label class="field">Monto<input type="number" id="f-amount" min="0" step="0.01" placeholder="0" value="'+(editing?editing.amount:'')+'" required></label>' +
+        '<label class="field">Fecha<input type="date" id="f-date" value="'+(editing?editing.date:iso(0))+'"></label>' +
+        '<label class="field full">Categoría'+catPickerHtml+'</label>' +
+        '<label class="field">Pagó<select id="f-paidby">'+paidByOptions+'</select></label>' +
+        '<label class="field">&nbsp;</label>' +
+        '<label class="field full">Se reparte entre'+splitHtml+'</label>' +
+        '<div class="full form-actions">' +
+          '<button type="submit" class="btn-primary">'+(editing?'Guardar cambios':'Agregar gasto')+'</button>' +
+          (editing ? '<button type="button" class="btn-secondary" id="cancelEditBtn">Cancelar</button>' : '') +
+          '<span class="form-err" id="formErr"></span>' +
+        '</div>' +
+      '</form>';
+
+    var filtered = expenses.filter(function(e){ return categoryFilter==='all' || e.category===categoryFilter; });
+    var rowsHtml = filtered.length ? filtered.map(function(e){
+      var c = catInfo(e.category);
+      var splitN = (e.splitAmong||[]).length;
+      var confirming = confirmingDeleteId === e.id;
+      return '<div class="expense-row">' +
+        '<span class="icon-badge" style="background:'+c.color+';color:var(--paper-raised)">'+iconSvg(e.category,13)+'</span>' +
+        '<div class="exp-main">' +
+          '<div class="exp-desc">'+esc(e.description)+'</div>' +
+          '<div class="exp-meta">'+(e.date||'')+' · pagó '+esc(e.paidBy)+' · entre '+splitN+'</div>' +
+        '</div>' +
+        '<div class="exp-right">' +
+          '<div class="exp-amt num">'+fmt(e.amount)+'</div>' +
+          '<div class="exp-actions">' +
+            '<button class="icon-btn" data-edit="'+e.id+'">editar</button>' +
+            '<button class="icon-btn danger" data-delete="'+e.id+'">'+(confirming?'¿seguro?':'borrar')+'</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') : '<div class="empty-note">No hay gastos en esta categoría todavía.</div>';
+
+    return renderLocalModeNotice() + renderNotice(gastosNotice) +
+      '<div class="card">'+chipsHtml+'</div>' +
+      '<div class="card"><h2>'+(editing?'Editar gasto':'Nuevo gasto')+'</h2>'+formHtml+'</div>' +
+      '<div class="card"><h2>Historial</h2><div class="expense-list">'+rowsHtml+'</div></div>';
+  }
+
+  function renderParticipantes(){
+    var d = configDraft || config;
+    var peopleHtml = (d.participants||[]).map(function(n){
+      return '<span class="person-chip">'+esc(n)+'<button type="button" data-remove-person="'+esc(n)+'" aria-label="Quitar">×</button></span>';
+    }).join('') || '<span class="empty-note">Todavía no cargaste a nadie.</span>';
+
+    return renderLocalModeNotice() + renderNotice(participantesNotice) +
+      '<div class="card">' +
+        '<h2>Datos del evento</h2>' +
+        '<div class="field-row">' +
+          '<label class="field">Nombre del evento<input type="text" id="f-eventname" value="'+esc(d.eventName||'')+'"></label>' +
+          '<label class="field">Moneda<input type="text" id="f-currency" maxlength="4" value="'+esc(d.currency||'$')+'"></label>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h2>Participantes ('+(d.participants||[]).length+')</h2>' +
+        '<div class="people-list" style="margin-bottom:12px;">'+peopleHtml+'</div>' +
+        '<div class="add-person">' +
+          '<input type="text" id="f-newperson" placeholder="Nombre y apellido o apodo">' +
+          '<button type="button" class="btn-secondary" id="addPersonBtn">Agregar</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+        '<button type="button" class="btn-primary" id="saveConfigBtn">Guardar cambios</button>' +
+        (draftDirty ? '<span class="dirty-note">Tenés cambios sin guardar</span>' : '<span class="empty-note">Todo guardado</span>') +
+      '</div>';
+  }
+
+  // ---------------- events ----------------
+
+  function bindTabEvents(){
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.onclick = function(){ activeTab = btn.getAttribute('data-tab'); confirmingDeleteId=null; gastosNotice=null; participantesNotice=null; render(); };
+    });
+    document.getElementById('whoamiSelect').onchange = function(e){
+      myName = e.target.value;
+      try{ localStorage.setItem(MYNAME_KEY, myName); }catch(err){}
+      render();
+    };
+  }
+
+  function bindResumenEvents(){}
+
+  function bindGastosEvents(){
+    document.querySelectorAll('[data-filter]').forEach(function(el){
+      el.onclick = function(){ categoryFilter = el.getAttribute('data-filter'); render(); };
+    });
+    document.querySelectorAll('[data-cat-opt]').forEach(function(el){
+      el.onclick = function(){
+        document.querySelectorAll('input[name="category"]').forEach(function(r){ r.checked = (r.value === el.getAttribute('data-cat-opt')); });
+        document.querySelectorAll('[data-cat-opt]').forEach(function(o){ o.classList.remove('sel'); o.style.background=''; o.style.borderColor=''; });
+        var c = catInfo(el.getAttribute('data-cat-opt'));
+        el.classList.add('sel'); el.style.background = c.color; el.style.borderColor = c.color;
+      };
+    });
+    document.querySelectorAll('[data-split-name]').forEach(function(el){
+      el.onclick = function(){ el.classList.toggle('sel'); };
+    });
+    document.querySelectorAll('[data-edit]').forEach(function(el){
+      el.onclick = function(){ editingId = el.getAttribute('data-edit'); confirmingDeleteId=null; render(); window.scrollTo({top:0, behavior:'smooth'}); };
+    });
+    document.querySelectorAll('[data-delete]').forEach(function(el){
+      el.onclick = function(){
+        var id = el.getAttribute('data-delete');
+        if(confirmingDeleteId === id){ confirmingDeleteId = null; deleteExpense(id); }
+        else { confirmingDeleteId = id; render(); }
+      };
+    });
+    var cancelBtn = document.getElementById('cancelEditBtn');
+    if(cancelBtn) cancelBtn.onclick = function(){ editingId = null; render(); };
+
+    var form = document.getElementById('expenseForm');
+    if(form){
+      form.onsubmit = function(ev){
+        ev.preventDefault();
+        var desc = document.getElementById('f-desc').value.trim();
+        var amount = parseFloat(document.getElementById('f-amount').value);
+        var date = document.getElementById('f-date').value || iso(0);
+        var catInput = document.querySelector('input[name="category"]:checked');
+        var category = catInput ? catInput.value : 'otros';
+        var paidBy = document.getElementById('f-paidby').value;
+        var splitAmong = Array.prototype.map.call(document.querySelectorAll('[data-split-name].sel'), function(el){ return el.getAttribute('data-split-name'); });
+        var err = document.getElementById('formErr');
+        if(!desc || !(amount > 0) || !paidBy || splitAmong.length === 0){
+          err.textContent = 'Completá descripción, monto, quién pagó y con quién se reparte.';
+          return;
+        }
+        err.textContent = '';
+        addOrUpdateExpense({ description:desc, amount:amount, date:date, category:category, paidBy:paidBy, splitAmong:splitAmong });
+      };
+    }
+  }
+
+  function bindParticipantesEvents(){
+    if(!configDraft) configDraft = clone(config);
+    document.getElementById('f-eventname').oninput = function(e){ configDraft.eventName = e.target.value; draftDirty = true; };
+    document.getElementById('f-currency').oninput = function(e){ configDraft.currency = e.target.value || '$'; draftDirty = true; };
+    document.querySelectorAll('[data-remove-person]').forEach(function(el){
+      el.onclick = function(){
+        var name = el.getAttribute('data-remove-person');
+        configDraft.participants = configDraft.participants.filter(function(n){ return n !== name; });
+        draftDirty = true;
+        render();
+      };
+    });
+    document.getElementById('addPersonBtn').onclick = function(){
+      var input = document.getElementById('f-newperson');
+      var name = input.value.trim();
+      if(!name) return;
+      if(configDraft.participants.indexOf(name) === -1){ configDraft.participants.push(name); draftDirty = true; }
+      input.value = '';
+      render();
+      var refocus = document.getElementById('f-newperson');
+      if(refocus) refocus.focus();
+    };
+    document.getElementById('f-newperson').onkeydown = function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('addPersonBtn').click(); }
+    };
+    document.getElementById('saveConfigBtn').onclick = function(){
+      saveConfig(clone(configDraft));
+    };
+  }
+
+  initStorage();
+})();
+</script>
+</body>
+</html>
